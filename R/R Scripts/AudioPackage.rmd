@@ -1,0 +1,252 @@
+---
+title: "Audio Package Data Cleaning"
+author: "Kourtney Burger"
+date: "2024-10-07"
+output: html_document
+---
+
+Data cleaning script to combine deployment details, calibration, and other deployment information into one spreadsheet that can be converted to PACE (using custom translator)
+
+# Set up: Required Packages, functions, and set WD
+```{r, echo=FALSE}
+# Load packages
+library(here)
+library(readr)
+library(readxl)
+library(writexl)
+library(dplyr)
+library(lubridate)
+
+#Taiki's date function
+posixToText <- function(x) {
+    format(x, '%Y-%m-%dT%H:%M:%S')
+}
+
+# Set working directory
+Dir <- here::here()
+```
+
+# Import Data
+
+Identify which drifts need to be packaged and download data from the 'New Deployment To Save' sheet on [deploymentDetails spreadsheet](https://docs.google.com/spreadsheets/d/10bxlwfVOe1LFfj69B_YddxcA0V14m7codYwgD2YncFk/edit?gid=395545420#gid=395545420)
+
+## Deployment Details
+```{r}
+dd <- read.csv(here::here("R/Test Spreadsheets/Deployment Details - NEW DEPLOYMENT TO SAVE.csv"))
+```
+
+## PACE Templates
+```{r}
+MobileMarineTemplate <- read_xlsx(here::here("R/Test Spreadsheets/Templates/Mobile-Marine-NCEI-PACE-Template.xlsx"))
+```
+
+
+# Prep and Clean Data
+## For testing, subset CalCurCEAS drifts
+```{r}
+dd <- subset(dd, Project == "CalCurCEAS")
+```
+
+## Remove lost or sunk drifts
+```{r}
+dd <- subset(dd, Status...In.Prep.....preparing.buoy.for.deployment..Active....at.sea.and.we.plan.to.recover..Lost....at.sea.but.unlikely.we.can.recover..Sunk....only.recovered.partial.buoy..assumed.dead..sunk..and.highly.unlikely.to.recover..Complete.....buoy.recovered.and.data.is.in.house..Unusable....buoy.recovered.but.data.is.unusable == "Complete")
+```
+
+## Fix Dates
+```{r}
+# Date should be formatted as YYYY-MM-DD
+dd$Date..UTC <- as.Date(dd$Date..UTC, format = "%m/%d/%Y")
+dd$ReleaseData <- dd$Date..UTC + years(2)
+dd$ReleaseData<- as.character(dd$ReleaseData)
+
+#Date times should be formatted as YYYY-MM-DDTHH:MM:SS
+dd$Deployment_Date_UTC <- as.POSIXct(dd$Deployment_Date_UTC, format = "%m/%d/%Y %H:%M:%S", tz = 'UTC')
+dd$Deployment_Date_UTC <- posixToText(dd$Deployment_Date_UTC)
+
+dd$Recovery_Date_UTC <- as.POSIXct(dd$Recovery_Date_UTC, format = "%m/%d/%Y %H:%M:%S", tz = 'UTC')
+dd$Recovery_Date_UTC <- posixToText(dd$Recovery_Date_UTC)
+
+dd$Data_Start_UTC..defined.once.data.is.recovered.by.scanning.LTSA. <- as.POSIXct(dd$Data_Start_UTC..defined.once.data.is.recovered.by.scanning.LTSA., format = "%m/%d/%Y %H:%M:%S", tz = 'UTC')
+dd$Data_Start_UTC..defined.once.data.is.recovered.by.scanning.LTSA. <- posixToText(dd$Data_Start_UTC..defined.once.data.is.recovered.by.scanning.LTSA.)
+
+dd$Data_End_UTC..defined.once.data.is.recovered.by.scanning.LTSA. <- as.POSIXct(dd$Data_End_UTC..defined.once.data.is.recovered.by.scanning.LTSA., format = "%m/%d/%Y %H:%M:%S", tz = 'UTC')
+dd$Data_End_UTC..defined.once.data.is.recovered.by.scanning.LTSA. <- posixToText(dd$Data_End_UTC..defined.once.data.is.recovered.by.scanning.LTSA.)
+```
+
+## Rename Recorder Types
+```{r}
+dd$Type[dd$Type == "ST640"] <- "SoundTrap 640"
+dd$Type[dd$Type == "ST4300HF"] <- "SoundTrap 4300 High Frequency"
+dd$Type[dd$Type == "ST300"] <- "SoundTrap 300"
+dd$Type[dd$Type == "ST4300STD"] <- "SoundTrap 4300"
+dd$Type[dd$Type == "ST500HF"] <- "SoundTrap 500 High Frequency"
+dd$Type[dd$Type == "ST300HF"] <- "SoundTrap 300 High Frequency"
+```
+
+## Rename Sites
+```{r}
+dd$Site[dd$Site == "WAS"] <- "Washington"
+dd$Site[dd$Site == "COL"] <- "Columbia River"
+dd$Site[dd$Site == "ORE"] <- "Oregon"
+dd$Site[dd$Site == "HUM"] <- "Humboldt"
+dd$Site[dd$Site == "MND"] <- "Mendocino"
+dd$Site[dd$Site == "PTA"] <- "Point Arena"
+dd$Site[dd$Site == "SFB"] <- "San Francisco Bay"
+dd$Site[dd$Site == "HMB"] <- "Half Moon Bay"
+dd$Site[dd$Site == "MBY"] <- "Monterey Bay"
+dd$Site[dd$Site == "MOB"] <- "Morro Bay"
+dd$Site[dd$Site == "CHI"] <- "Channel Islands"
+dd$Site[dd$Site == "LAB"] <- "Los Angeles Basin"
+dd$Site[dd$Site == "SND"] <- "San Diego"
+dd$Site[dd$Site == "BCN"] <- "Baja California Norte"
+dd$Site[dd$Site == "BCS"] <- "Baja California Sur"
+```
+
+## Fix Personnel Column
+```{r}
+#Ensuring Cory is added to every CalCurCEAS drift
+dd$Personnel <- ifelse(!is.na(dd$Personnel) & dd$Personnel != "Cory Hom-Weaver", 
+                       paste0("Cory Hom-Weaver;", dd$Personnel), 
+                       dd$Personnel)
+
+gsub(", ", ";", dd$Personnel)
+```
+
+## Fix platform types
+```{r}
+dd$Platform[dd$Platform == "drift"] <- 'Drifter'
+dd$Platform[dd$Platform == "towed"] <- 'Towed Array'
+dd$Platform[dd$Platform == "moored"] <- 'Morring'
+```
+
+
+# Setup PACE Spreadsheet
+## Fix columns to match PACE template
+```{r}
+MobileMarineData <- data.frame(
+  # Translator info
+  
+  # Package Tab
+    #"UUID" = '' # Leave blank, PACE autocreates this
+    "Data Collection Name" = paste0('SWFSC-', dd$Drift.), #Package name
+    #'Site Or Cruise Name' = '', #Not used
+    "Deployment Id" = dd$Drift.,
+    "Projects" = dd$Project,
+    "Platform" = dd$Platform,                                 
+    "Instrument" = dd$Type,                               
+    "Deployment Title" = 'California Current Cetacean Ecosystem Assessment Surve (CalCurCEAS)',
+    #"Deployment Purpose" = '', # Ask Jeff                      
+    #"Deployment Description" = '', #Not used                   
+    "Alternate Site Name" = dd$Site,                      
+    #"Alternate Deployment Name" = '', # Not used                  
+    "Public Release Date" = dd$ReleaseData,
+    "Time Zone" = 'UTC',
+    
+  # File Paths Tab
+    # "Temperature Path" = '', #no temp data
+    # "Biological Path" = '', #no bio data
+    "Other Path" = '', #include acceleration and ...
+    "Documents Path" = '', # no docs until published
+    "Source Path" =  paste0('Z:/RECORDINGS/DRIFTERS/CalCurCEAS_2024/RAW/', dd$Drift.), # Path to audio data   
+  
+  # Contacts Tab
+    "Scientists" = dd$Personnel,
+    "Sources" = 'NOAA SWFSC', # Sponsers, swfsc
+    "Funders" = '', #Check with Jeff/Shannon
+    "Dataset Packager" = 'Kourtney Burger',
+  
+  # Calibration Tab
+    "Calibration Documents Path" = '', # link to calibration file
+    "Calibration Description" = 'This dataset is composed of multichannel recorders with different types of hydrophones, each with its own unique sensitivity and frequency range. For the detailed calibration information refer to the CalCurCEAS_CalibrationInfo.csv spreadsheet.', #Create calibration sheet from inventory                 
+    # "Pre Deployment Calibration Date" = '',
+    # "Post Deployment Calibration Date" = '',
+  
+  # Location Tab
+    "Location Type" = 'Mobile Marine',
+    "Sea Area" = 'North Pacific Ocean',  
+    "Vessel" = dd$Deploy.Vessel,                                   
+    "Location Derivation Description" = 'Location derived from GPS data affixed to top of drifting buoy',          
+    "File(s)" = paste0('Z:/METADATA/CalCurCEAS_2024/', dd$Drift., '/', dd$Drift., '_GPS'), # Path to GPS data
+  
+  # Quality Tab
+    "Quality Analyst" = dd$Quality_Analyst,                          
+    # "Quality Analysis Objectives" = '', # Type out objectives
+    # "Quality Analysis Method" = '', # Type out method, i.e. scanned ltsa ...
+    # "Quality Assessment Description" = '', # not sure...
+  
+    # Entries
+      "Quality Entries (0) Min Frequency" = dd$Quality_LowFreq,        
+      "Quality Entries (0) Max Frequency" = dd$Quality_HighFreq,        
+      "Quality Entries (0) Quality Level" = 'Good',
+      "Quality Entries (0) Start Time" = dd$Data_Start_UTC..defined.once.data.is.recovered.by.scanning.LTSA.,
+      "Quality Entries (0) End Time" = dd$Data_End_UTC..defined.once.data.is.recovered.by.scanning.LTSA.,  
+      "Quality Entries (0) Comments" = '',           
+      "Channel Number(s)" = '1', # This only changes if something is wrong with channel 1 and we use channel 2 for analysis
+  
+  # Channels Tab - this will be repeated for each channel in the PACE translator. None of the information here changes between channels 1 and 2 so we do not need additional columns for channel 2
+    # Channel 1
+      "Channels (0) Start Time" = dd$Data_Start_UTC..defined.once.data.is.recovered.by.scanning.LTSA.,
+      "Channels (0) End Time" = dd$Data_End_UTC..defined.once.data.is.recovered.by.scanning.LTSA.,
+    # Sample Rate 1
+      "Channels (0) Sample Rates (0) Sample Rate" = dd$SampleRate_kHz * 1000,
+      "Channels (0) Sample Rates (0) Sample Bits" = '16',
+      "Channels (0) Sample Rates (0) Start Time" = dd$Data_Start_UTC..defined.once.data.is.recovered.by.scanning.LTSA.,
+      "Channels (0) Sample Rates (0) End Time" = dd$Data_End_UTC..defined.once.data.is.recovered.by.scanning.LTSA., 
+    # Duty Cycle 1
+      "Channels (0) Duty Cycles (0) Duration" = '6',    
+      "Channels (0) Duty Cycles (0) Interval" = '6',    
+      "Channels (0) Duty Cycles (0) Start Time" = dd$Data_Start_UTC..defined.once.data.is.recovered.by.scanning.LTSA.,
+      "Channels (0) Duty Cycles (0) End Time" = dd$Data_End_UTC..defined.once.data.is.recovered.by.scanning.LTSA., 
+  
+  # Package Detail Tab
+    "Instrument Id" = dd$Instrument_ID..serial.number.,               
+    # "Comments" = '',                                 
+    "Deployment Time" = dd$Deployment_Date_UTC,
+    "Recovery Time" = dd$Recovery_Date_UTC,
+    "Audio Start Time" = dd$Data_Start_UTC..defined.once.data.is.recovered.by.scanning.LTSA.,
+    "Audio End Time" = dd$Data_End_UTC..defined.once.data.is.recovered.by.scanning.LTSA.,
+    
+    # Sensor 1 - Hydrophone CH1
+    "Hydrophone ID CH1" = dd$SensorNumber_1..hydrophone.serial.number.,
+    "Hydrophone 1 - Position X" = '0',                              
+    "Hydrophone 1 - Position Y" = '0',                              
+    "Hydrophone 1 - Position Z" = '-95',
+  
+    # Sensor 2 - Hydrophone CH2
+    "Hydrophone ID CH2" = dd$SensorNumber_2...hydrophone.serial.number.,
+    "Hydrophone 2 - Position X" = '0',                              
+    "Hydrophone 2 - Position Y" = '0',                              
+    "Hydrophone 2 - Position Z" = '-100',
+
+    # Sensor 3 - GPS
+    "GPS ID" = dd$GPS.ID..if.appropriate...top...bottom.,
+    "GPS - Position X" = '0',                              
+    "GPS - Position Y" = '0',                              
+    "GPS - Position Z" = '+1',  
+
+    # Sensor 4 - Depth Sensor
+    "Depth Sensor ID" = dd$Depth.Sensor..serial.number..top.bottom.,
+    "Depth Sensor - Position X" = '0',                              
+    "Depth Sensor - Position Y" = '0',                              
+    "Depth Sensor - Position Z" = '-90',
+      
+  
+  # "Dataset Type" = 'Audio',
+  # "Projects" = dd$Project,
+  # "Start Time" = dd$Data_Start_UTC..defined.once.data.is.recovered.by.scanning.LTSA.,                              
+  # "End Time" = dd$Data_End_UTC..defined.once.data.is.recovered.by.scanning.LTSA.,                                 
+  # "Navigation Path" = paste0('Z:/METADATA/CalCurCEAS_2024/', dd$Drift., '/', dd$Drift., '_GPS'),    
+                   
+  check.names=FALSE
+  )
+```
+
+
+# Export spreadsheet
+```{r}
+#write.csv(MobileMarineData, file = "C:/Users/kourtney.burger/Documents/Data Archive/NCEI/PACE/PACE-NCEI/Test Spreadsheets/MobileMarineData.csv", row.names = FALSE)
+
+write_xlsx(MobileMarineData, here::here("R/Test Spreadsheets/ExportedMobileMarineData.xlsx"))
+```
+
+
