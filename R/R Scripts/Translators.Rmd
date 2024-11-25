@@ -1,0 +1,202 @@
+---
+title: "PACE Translators Setup"
+author: "Kourtney Burger"
+date: "2024-11-22"
+output: html_document
+---
+
+Script to create translators and spreadsheets to package passive acoustics data for archive at NCEI
+```{r}
+# Load packages
+library(readxl)
+library(here)
+library(writexl)
+library(dplyr)
+
+# Read in deployment details and other metadata needed
+dd <- read.csv(here::here("R/Test Spreadsheets/Deployment Details - NEW DEPLOYMENT TO SAVE- TEMPLATE TEST.csv"))
+```
+
+
+# Project
+```{r}
+# Read in template spreadsheet and set up dataframe
+ProjTemplate <- read_xlsx(here::here("R/Test Spreadsheets/Templates/Project-KB-Template.xlsx"))
+
+# Add projects list from deployment details to list
+Projects <- data.frame(
+  "Name" = unique(dd$Project)
+)
+
+# Export dataframe
+write_xlsx(Projects, here::here("R/Test Spreadsheets/Projects.xlsx"))
+```
+
+# Person
+```{r}
+# Read in template spreadsheet and set up dataframe
+PersonTemplate <- read_xlsx(here::here("R/Test Spreadsheets/Templates/Person-KB-Template.xlsx"))
+
+# Add people from deployment details
+unique_names <- unique(trimws(unlist(strsplit(dd$Personnel, ", "))))
+Person <- data.frame(
+  Name = unique_names,
+  Position = '', 
+  Organization = '',
+  Street = '',
+  City = '',
+  State = '',
+  Zip = '',
+  Country = '',
+  Email = '',
+  Phone = '',
+  Orcid = ''
+)
+
+#Need to fill in person specific information manually before translating this metadata to PACE
+
+# Export dataframe
+write_xlsx(Person, here::here("R/Test Spreadsheets/Person.xlsx"))
+```
+
+# Organizations
+```{r}
+# Read in template spreadsheet and set up dataframe
+OrgTemplate <- read_xlsx(here::here("R/Test Spreadsheets/Templates/Organization-KB-Template.xlsx"))
+
+# Add organizations - DOING THIS MANUALLY
+# Organization <- data.frame(
+#   Name = '',
+#   Street = '',
+#   City = '',
+#   State = '',
+#   Zip = '',
+#   Country = '',
+#   Email = '',
+#   Phone = ''
+# )
+Organization <- OrgTemplate
+
+#Need to fill in person specific information manually before translating this metadata to PACE
+
+# Export dataframe
+write_xlsx(Organization, here::here("R/Test Spreadsheets/Organization.xlsx"))
+```
+
+# Instruments
+```{r}
+# Read in template spreadsheet and set up dataframe
+InstrumentTemplate <- read_xlsx(here::here("R/Test Spreadsheets/Templates/Instrument-KB-Template.xlsx"))
+
+# Clean instruments spreadsheet
+dd$Type[dd$Type == "ST640"] <- "SoundTrap 640"
+dd$Type[dd$Type == "ST4300HF"] <- "SoundTrap 4300 High Frequency"
+dd$Type[dd$Type == "ST300"] <- "SoundTrap 300"
+dd$Type[dd$Type == "ST4300STD"] <- "SoundTrap 4300"
+dd$Type[dd$Type == "ST500HF"] <- "SoundTrap 500 High Frequency"
+dd$Type[dd$Type == "ST300HF"] <- "SoundTrap 300 High Frequency"
+
+# Add projects list from deployment details to list
+Instruments <- data.frame(
+  "Name" = unique(dd$Type),
+  "File Types" = 'wav'
+)
+
+# Export dataframe
+write_xlsx(Instruments, here::here("R/Test Spreadsheets/Instruments.xlsx"))
+```
+
+# Sensors
+## Hydrophones
+```{r}
+# Read in template spreadsheet and set up dataframe
+HydrophoneTemplate <- read_xlsx(here::here("R/Test Spreadsheets/Templates/Hydrophone-Sensor-KB-Template.xlsx"))
+
+# Read in hydrophone inventory for more metadata
+HPInventory <- read.csv(here::here("R/Test Spreadsheets/Inventory - Hydrophones.csv"))
+
+# Add projects list from deployment details to list
+Hydrophones <- data.frame(
+  "Name" = HPInventory$Serial.Number,
+  "Description" = HPInventory$Model,
+  "Hydrophone ID" = HPInventory$Serial.Number,
+  "Preamp ID" = ' '
+)
+
+# Remove duplicates
+Hydrophones <- distinct(Hydrophones, Name, .keep_all = TRUE)
+
+# Export dataframe
+write_xlsx(Hydrophones, here::here("R/Test Spreadsheets/Hydrophones.xlsx"))
+```
+
+## Depth Sensors
+```{r}
+# Read in template spreadsheet and set up dataframe
+DepthTemplate <- read_xlsx(here::here("R/Test Spreadsheets/Templates/Depth-Sensor-KB-Template.xlsx"))
+
+# Add projects list from deployment details to list
+Depth <- data.frame(
+  "Name" = unique(dd$Depth.Sensor..serial.number..top.bottom.),
+  "Description" = 'Sensus Depth Sensor',
+  "ID" = unique(dd$Depth.Sensor..serial.number..top.bottom.)
+)
+
+# Export dataframe
+write_xlsx(Depth, here::here("R/Test Spreadsheets/DepthSensors.xlsx"))
+```
+
+## GPS and others
+```{r}
+# Read in template spreadsheet and set up dataframe
+GPSTemplate <- read_xlsx(here::here("R/Test Spreadsheets/Templates/GPS-other-Sensor-KB-Template.xlsx"))
+
+# Clean GPS data
+dd$`GPS.ID..if.appropriate...top...bottom.` <- 
+  ifelse(is.na(dd$`GPS.ID..if.appropriate...top...bottom.`), "NA", dd$`GPS.ID..if.appropriate...top...bottom.`)
+
+dd$Properties <- NA  # Initialize the column with NA values
+
+# Conditional assignments for each specific case
+dd$Properties[dd$GPS.Tracker == "SPOT"] <- "SPOT GPS Tracker. Two GPS devices were used in case one failed. The GPS data from both devices has been cleaned and combined into one trackline."
+dd$Properties[dd$GPS.Tracker == "Spot"] <- "SPOT GPS Tracker. Two GPS devices were used in case one failed. The GPS data from both devices has been cleaned and combined into one trackline."
+dd$Properties[is.na(dd$GPS.Tracker)] <- "NA"  # Use is.na() to check for missing values
+dd$Properties[dd$GPS.Tracker == "SPOT and solar gps"] <- "Both SPOT and Lonestar Solar GPS were attached to this deployment. GPS data from all devices were cleaned and combined into one trackline."
+dd$Properties[dd$GPS.Tracker == "Solar"] <- "Lonestar Solar GPS device."
+
+dd$GPS.Tracker[dd$GPS.Tracker == "SPOT"] <- "SPOT GPS Tracker. Two GPS devices were used in case one failed. The GPS data from both devices has been cleaned and combined into one trackline."
+dd$GPS.Tracker[dd$GPS.Tracker == "Spot"] <- "SPOT GPS Tracker. Two GPS devices were used in case one failed. The GPS data from both devices has been cleaned and combined into one trackline."
+dd$GPS.Tracker[dd$GPS.Tracker == "NA"] <- "NA"
+dd$GPS.Tracker[dd$GPS.Tracker == "SPOT and solar gps"] <- "Both SPOT and Lonestar Solar GPS were attached to this deployment. GPS data from all devices were cleaned and combined into one trackline."
+dd$GPS.Tracker[dd$GPS.Tracker == "Solar"] <- "Lonestar Solar GPS device."
+
+# Add projects list from deployment details to list
+GPS <- data.frame(
+  "Name" = dd$GPS.ID..if.appropriate...top...bottom.,
+  "Description" = dd$GPS.Tracker,
+  "ID" = dd$GPS.ID..if.appropriate...top...bottom.,
+  "Sensor Type" = 'GPS',
+  "Properties" = dd$Properties
+)
+
+# Remove duplicates
+GPS <- distinct(GPS, Name, .keep_all = TRUE)
+
+# Export dataframe
+write_xlsx(GPS, here::here("R/Test Spreadsheets/GPS&OtherSensors.xlsx"))
+```
+
+
+# Ships
+```{r}
+# Read in template spreadsheet and set up dataframe
+ShipTemplate <- read_xlsx(here::here("R/Test Spreadsheets/Templates/Ship-KB-Template.xlsx"))
+
+# Add ship list from deployment details
+Ship <- data.frame(
+  "Name" = unique(dd$Deploy.Vessel)
+)
+
+# Export dataframe
+write_xlsx(Ship, here::here("R/Test Spreadsheets/Ships.xlsx"))
+```
