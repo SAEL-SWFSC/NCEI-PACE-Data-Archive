@@ -32,12 +32,12 @@ Identify which drifts need to be packaged and download data from the 'New Deploy
 
 ## Deployment Details
 ```{r}
-dd <- read.csv(here::here("R/Test Spreadsheets/Deployment Details - NEW DEPLOYMENT TO SAVE.csv"))
+dd <- read.csv(here::here("R/Spreadsheets & Templates/SAEL Metadata/Deployment Details - NEW DEPLOYMENT TO SAVE.csv"))
 ```
 
-## PACE Templates
+## PACE NCEI-Templates
 ```{r}
-MobileMarineTemplate <- read_xlsx(here::here("R/Test Spreadsheets/Templates/Mobile-Marine-NCEI-PACE-Template.xlsx"))
+MobileMarineTemplate <- read_xlsx(here::here("R/Spreadsheets & Templates/NCEI-Templates/Mobile-Marine-NCEI-PACE-Template.xlsx"))
 ```
 
 
@@ -244,9 +244,7 @@ MobileMarineData <- data.frame(
 
 # Export spreadsheet
 ```{r}
-#write.csv(MobileMarineData, file = "C:/Users/kourtney.burger/Documents/Data Archive/NCEI/PACE/PACE-NCEI/Test Spreadsheets/MobileMarineData.csv", row.names = FALSE)
-
-write_xlsx(MobileMarineData, here::here("R/Test Spreadsheets/ExportedMobileMarineData.xlsx"))
+write_xlsx(MobileMarineData, here::here("R/Spreadsheets & Templates/ExportedMobileMarineData.xlsx"))
 ```
 
 

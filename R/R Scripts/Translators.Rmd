@@ -14,14 +14,14 @@ library(writexl)
 library(dplyr)
 
 # Read in deployment details and other metadata needed
-dd <- read.csv(here::here("R/Test Spreadsheets/Deployment Details - NEW DEPLOYMENT TO SAVE- TEMPLATE TEST.csv"))
+dd <- read.csv(here::here("R/Spreadsheets & Templates/SAEL Metadata/Deployment Details - NEW DEPLOYMENT TO SAVE- TEMPLATE TEST.csv"))
 ```
 
 
 # Project
 ```{r}
 # Read in template spreadsheet and set up dataframe
-ProjTemplate <- read_xlsx(here::here("R/Test Spreadsheets/Templates/Project-KB-Template.xlsx"))
+ProjTemplate <- read_xlsx(here::here("R/Spreadsheets & Templates/NCEI-Templates/Project-KB-Template.xlsx"))
 
 # Add projects list from deployment details to list
 Projects <- data.frame(
@@ -29,13 +29,13 @@ Projects <- data.frame(
 )
 
 # Export dataframe
-write_xlsx(Projects, here::here("R/Test Spreadsheets/Projects.xlsx"))
+write_xlsx(Projects, here::here("R/Spreadsheets & Templates/Projects.xlsx"))
 ```
 
 # Person
 ```{r}
 # Read in template spreadsheet and set up dataframe
-PersonTemplate <- read_xlsx(here::here("R/Test Spreadsheets/Templates/Person-KB-Template.xlsx"))
+PersonTemplate <- read_xlsx(here::here("R/Spreadsheets & Templates/NCEI-Templates/Person-KB-Template.xlsx"))
 
 # Add people from deployment details
 unique_names <- unique(trimws(unlist(strsplit(dd$Personnel, ", "))))
@@ -56,13 +56,13 @@ Person <- data.frame(
 #Need to fill in person specific information manually before translating this metadata to PACE
 
 # Export dataframe
-write_xlsx(Person, here::here("R/Test Spreadsheets/Person.xlsx"))
+write_xlsx(Person, here::here("R/Spreadsheets & Templates/Person.xlsx"))
 ```
 
 # Organizations
 ```{r}
 # Read in template spreadsheet and set up dataframe
-OrgTemplate <- read_xlsx(here::here("R/Test Spreadsheets/Templates/Organization-KB-Template.xlsx"))
+OrgTemplate <- read_xlsx(here::here("R/Spreadsheets & Templates/NCEI-Templates/Organization-KB-Template.xlsx"))
 
 # Add organizations - DOING THIS MANUALLY
 # Organization <- data.frame(
@@ -80,13 +80,13 @@ Organization <- OrgTemplate
 #Need to fill in person specific information manually before translating this metadata to PACE
 
 # Export dataframe
-write_xlsx(Organization, here::here("R/Test Spreadsheets/Organization.xlsx"))
+write_xlsx(Organization, here::here("R/Spreadsheets & Templates/Organization.xlsx"))
 ```
 
 # Instruments
 ```{r}
 # Read in template spreadsheet and set up dataframe
-InstrumentTemplate <- read_xlsx(here::here("R/Test Spreadsheets/Templates/Instrument-KB-Template.xlsx"))
+InstrumentTemplate <- read_xlsx(here::here("R/Spreadsheets & Templates/NCEI-Templates/Instrument-KB-Template.xlsx"))
 
 # Clean instruments spreadsheet
 dd$Type[dd$Type == "ST640"] <- "SoundTrap 640"
@@ -103,17 +103,17 @@ Instruments <- data.frame(
 )
 
 # Export dataframe
-write_xlsx(Instruments, here::here("R/Test Spreadsheets/Instruments.xlsx"))
+write_xlsx(Instruments, here::here("R/Spreadsheets & Templates/Instruments.xlsx"))
 ```
 
 # Sensors
 ## Hydrophones
 ```{r}
 # Read in template spreadsheet and set up dataframe
-HydrophoneTemplate <- read_xlsx(here::here("R/Test Spreadsheets/Templates/Hydrophone-Sensor-KB-Template.xlsx"))
+HydrophoneTemplate <- read_xlsx(here::here("R/Spreadsheets & Templates/NCEI-Templates/Hydrophone-Sensor-KB-Template.xlsx"))
 
 # Read in hydrophone inventory for more metadata
-HPInventory <- read.csv(here::here("R/Test Spreadsheets/Inventory - Hydrophones.csv"))
+HPInventory <- read.csv(here::here("R/Spreadsheets & Templates/SAEL Metadata/Inventory - Hydrophones.csv"))
 
 # Add projects list from deployment details to list
 Hydrophones <- data.frame(
@@ -127,13 +127,13 @@ Hydrophones <- data.frame(
 Hydrophones <- distinct(Hydrophones, Name, .keep_all = TRUE)
 
 # Export dataframe
-write_xlsx(Hydrophones, here::here("R/Test Spreadsheets/Hydrophones.xlsx"))
+write_xlsx(Hydrophones, here::here("R/Spreadsheets & Templates/Hydrophones.xlsx"))
 ```
 
 ## Depth Sensors
 ```{r}
 # Read in template spreadsheet and set up dataframe
-DepthTemplate <- read_xlsx(here::here("R/Test Spreadsheets/Templates/Depth-Sensor-KB-Template.xlsx"))
+DepthTemplate <- read_xlsx(here::here("R/Spreadsheets & Templates/NCEI-Templates/Depth-Sensor-KB-Template.xlsx"))
 
 # Add projects list from deployment details to list
 Depth <- data.frame(
@@ -143,13 +143,13 @@ Depth <- data.frame(
 )
 
 # Export dataframe
-write_xlsx(Depth, here::here("R/Test Spreadsheets/DepthSensors.xlsx"))
+write_xlsx(Depth, here::here("R/Spreadsheets & Templates/DepthSensors.xlsx"))
 ```
 
 ## GPS and others
 ```{r}
 # Read in template spreadsheet and set up dataframe
-GPSTemplate <- read_xlsx(here::here("R/Test Spreadsheets/Templates/GPS-other-Sensor-KB-Template.xlsx"))
+GPSTemplate <- read_xlsx(here::here("R/Spreadsheets & Templates/NCEI-Templates/GPS-other-Sensor-KB-Template.xlsx"))
 
 # Clean GPS data
 dd$`GPS.ID..if.appropriate...top...bottom.` <- 
@@ -183,14 +183,14 @@ GPS <- data.frame(
 GPS <- distinct(GPS, Name, .keep_all = TRUE)
 
 # Export dataframe
-write_xlsx(GPS, here::here("R/Test Spreadsheets/GPS&OtherSensors.xlsx"))
+write_xlsx(GPS, here::here("R/Spreadsheets & Templates/GPS&OtherSensors.xlsx"))
 ```
 
 
 # Ships
 ```{r}
 # Read in template spreadsheet and set up dataframe
-ShipTemplate <- read_xlsx(here::here("R/Test Spreadsheets/Templates/Ship-KB-Template.xlsx"))
+ShipTemplate <- read_xlsx(here::here("R/Spreadsheets & Templates/NCEI-Templates/Ship-KB-Template.xlsx"))
 
 # Add ship list from deployment details
 Ship <- data.frame(
@@ -198,5 +198,5 @@ Ship <- data.frame(
 )
 
 # Export dataframe
-write_xlsx(Ship, here::here("R/Test Spreadsheets/Ships.xlsx"))
+write_xlsx(Ship, here::here("R/Spreadsheets & Templates/Ships.xlsx"))
 ```
