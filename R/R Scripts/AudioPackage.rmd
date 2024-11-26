@@ -121,6 +121,12 @@ dd$Platform[dd$Platform == "moored"] <- 'Morring'
 
 
 # Setup PACE Spreadsheet
+## Make source path
+```{r}
+dd$source <- 'NA'
+
+```
+
 ## Fix columns to match PACE template
 ```{r}
 MobileMarineData <- data.frame(
@@ -136,7 +142,7 @@ MobileMarineData <- data.frame(
     "Instrument" = dd$Type,                               
     "Deployment Title" = 'California Current Cetacean Ecosystem Assessment Surve (CalCurCEAS)',
     #"Deployment Purpose" = '', # Ask Jeff                      
-    #"Deployment Description" = '', #Not used                   
+    "Deployment Description" = '', #Not used                   
     "Alternate Site Name" = dd$Site,                      
     #"Alternate Deployment Name" = '', # Not used                  
     "Public Release Date" = dd$ReleaseData,

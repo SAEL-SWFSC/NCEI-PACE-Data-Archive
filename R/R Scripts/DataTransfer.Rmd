@@ -1,0 +1,94 @@
+---
+title: "Data Transfer and Folder Manipulation"
+author: "Kourtney Burger"
+date: "2024-10-07"
+output: html_document
+---
+
+# Move files to prep for archive
+ - moving GPS data, 
+ - moving accelerometer data, log files, and depth data to other folder
+ 
+```{r}
+#Read in deployment details
+dd <- read.csv(here::here("R/Spreadsheets & Templates/SAEL Metadata/Deployment Details - NEW DEPLOYMENT TO SAVE.csv"))
+```
+
+```{r}
+#Create file path
+dir.create(file.path('C:/Users/kourtney.burger/Desktop/CalCurCEAS PACE/metadata'))
+```
+
+```{r}
+#Move GPS data
+for (i in 1:nrow(dd)) {
+  dir.create(file.path(paste0('C:/Users/kourtney.burger/Desktop/CalCurCEAS PACE/metadata/', 
+                             dd$Data_ID[i],'/gps')))  
+  
+  # List of current gps files location
+  currentGPS <- list.files(paste0('Z:/METADATA/CalCurCEAS_2024/',dd$Data_ID[i],
+                                 '/',dd$Data_ID[i],'_GPS'), 
+                           pattern = "\\_GPS.csv$", full.names = T)
+  
+  # Create folder/directory to move the list above to
+  dir.create(file.path(paste0('C:/Users/kourtney.burger/Desktop/CalCurCEAS PACE/metadata/', dd$Data_ID[i],'/gps')))
+  
+  newGPS <- dir.create(file.path(paste0('C:/Users/kourtney.burger/Desktop/CalCurCEAS PACE/metadata/', dd$Data_ID[i],'/gps')))
+
+  # Copy list of files to new directory
+  file.copy(currentGPS, newGPS)
+}  
+```
+
+```{r}
+# Set up progress bar
+pb <- txtProgressBar(min = 0, max = nrow(dd), style = 3, width = 50, char = "=")  
+# Move other data
+for (i in 1:nrow(dd)) {
+  # Accelerometer
+    currentAccel <- list.files(paste0('Z:/RECORDINGS/DRIFTERS/CalCurCEAS_2024/RAW/',
+                                      dd$Data_ID[i], '/ACCELERATION'),
+                               pattern = "\\.accel.csv$", full.names = T)
+
+    # Create folder/directory to move the list above to
+    dir.create(file.path(paste0('C:/Users/kourtney.burger/Desktop/CalCurCEAS PACE/metadata/',
+                                dd$Data_ID[i],'/accelerometer')))
+    newAccel <- file.path(paste0('C:/Users/kourtney.burger/Desktop/CalCurCEAS PACE/metadata/',
+                                dd$Data_ID[i],'/accelerometer'))
+    # Copy list of files to new directory
+    file.copy(currentAccel, newAccel)
+    
+    
+  # Logs
+    currentLogs <- list.files(paste0('Z:/RECORDINGS/DRIFTERS/CalCurCEAS_2024/RAW/',
+                                      dd$Data_ID[i], '/LOG'),
+                               pattern = "\\.log.xml$", full.names = T)
+
+    # Create folder/directory to move the list above to
+    dir.create(file.path(paste0('C:/Users/kourtney.burger/Desktop/CalCurCEAS PACE/metadata/',
+                                dd$Data_ID[i],'/logs')))
+    newLogs <- file.path(paste0('C:/Users/kourtney.burger/Desktop/CalCurCEAS PACE/metadata/',
+                                dd$Data_ID[i],'/logs'))
+    # Copy list of files to new directory
+    file.copy(currentLogs, newLogs)   
+    
+    
+  # Depth
+    currentDepth <- list.files(paste0('Z:/METADATA/CalCurCEAS_2024/', dd$Data_ID[i], '/', dd$Data_ID[i], '_Depth_Sensus'), pattern = "_final.csv$", full.names = TRUE)
+
+    # Create folder/directory to move the list above to
+    dir.create(file.path(paste0('C:/Users/kourtney.burger/Desktop/CalCurCEAS PACE/metadata/',
+                                dd$Data_ID[i],'/depth')))
+    newDepth <- file.path(paste0('C:/Users/kourtney.burger/Desktop/CalCurCEAS PACE/metadata/',
+                                dd$Data_ID[i],'/depth'))
+    # Copy list of files to new directory
+    file.copy(currentDepth, newDepth)
+    
+  # Sets the progress bar to the current state
+  setTxtProgressBar(pb, i)
+}
+```
+
+ 
+ 
+ 
