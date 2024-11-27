@@ -140,9 +140,9 @@ MobileMarineData <- data.frame(
     "Projects" = dd$Project,
     "Platform" = dd$Platform,                                 
     "Instrument" = dd$Type,                               
-    "Deployment Title" = 'California Current Cetacean Ecosystem Assessment Surve (CalCurCEAS)',
-    #"Deployment Purpose" = '', # Ask Jeff                      
-    "Deployment Description" = '', #Not used                   
+    "Deployment Title" = 'California Current Cetacean Ecosystem Assessment Survey (CalCurCEAS)',
+    "Deployment Purpose" = 'The purpose of the 2024 California Current Cetacean and Ecosystem Assessment Survey (CalCurCEAS) was to collect visual line-transect data for estimating the density of all cetacean species along the United States West Coast. Drifting acoustic spar buoy recorders (DASBR) were deployed throughout the survey area and continuously recorded the ocean soundscape up to 384 kHz. DASBRs are free floating instruments with two hydrophones in a vertical array and a digital recorder.',
+    #"Deployment Description" = '', #Not used                   
     "Alternate Site Name" = dd$Site,                      
     #"Alternate Deployment Name" = '', # Not used                  
     "Public Release Date" = dd$ReleaseData,
@@ -151,18 +151,19 @@ MobileMarineData <- data.frame(
   # File Paths Tab
     # "Temperature Path" = '', #no temp data
     # "Biological Path" = '', #no bio data
-    "Other Path" = '', #include acceleration and ...
-    "Documents Path" = '', # no docs until published
+    "Other Path" = paste0('C:/Users/kourtney.burger/Desktop/CalCurCEAS PACE/metadata/',
+                                dd$Data_ID[i]), #include acceleration, logs, and depth data
+    #"Documents Path" = '', # no docs until published
     "Source Path" =  paste0('Z:/RECORDINGS/DRIFTERS/CalCurCEAS_2024/RAW/', dd$Drift.), # Path to audio data   
   
   # Contacts Tab
     "Scientists" = dd$Personnel,
-    "Sources" = 'NOAA SWFSC', # Sponsers, swfsc
-    "Funders" = '', #Check with Jeff/Shannon
+    "Sources" = 'NOAA SWFSC;', # Organization running survey
+    "Funders" = 'NOAA SWFSC;Bureau of Ocean Energy Management (BOEM)', 
     "Dataset Packager" = 'Kourtney Burger',
   
   # Calibration Tab
-    "Calibration Documents Path" = '', # link to calibration file
+    "Calibration Documents Path" = '', # link to calibration file, make one for project if necessary
     "Calibration Description" = 'This dataset is composed of multichannel recorders with different types of hydrophones, each with its own unique sensitivity and frequency range. For the detailed calibration information refer to the CalCurCEAS_CalibrationInfo.csv spreadsheet.', #Create calibration sheet from inventory                 
     # "Pre Deployment Calibration Date" = '',
     # "Post Deployment Calibration Date" = '',
@@ -171,8 +172,8 @@ MobileMarineData <- data.frame(
     "Location Type" = 'Mobile Marine',
     "Sea Area" = 'North Pacific Ocean',  
     "Vessel" = dd$Deploy.Vessel,                                   
-    "Location Derivation Description" = 'Location derived from GPS data affixed to top of drifting buoy',          
-    "File(s)" = paste0('Z:/METADATA/CalCurCEAS_2024/', dd$Drift., '/', dd$Drift., '_GPS'), # Path to GPS data
+    "Location Derivation Description" = 'Location derived from GPS device affixed to top of drifting buoy',          
+    "File(s)" = paste0('C:/Users/kourtney.burger/Desktop/CalCurCEAS PACE/metadata/gps/', dd$Data_ID[i]), # Path to GPS data
   
   # Quality Tab
     "Quality Analyst" = dd$Quality_Analyst,                          

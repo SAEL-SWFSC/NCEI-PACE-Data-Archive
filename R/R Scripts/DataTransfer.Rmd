@@ -33,7 +33,7 @@ for (i in 1:nrow(dd)) {
   # Create folder/directory to move the list above to
   dir.create(file.path(paste0('C:/Users/kourtney.burger/Desktop/CalCurCEAS PACE/metadata/', dd$Data_ID[i],'/gps')))
   
-  newGPS <- dir.create(file.path(paste0('C:/Users/kourtney.burger/Desktop/CalCurCEAS PACE/metadata/', dd$Data_ID[i],'/gps')))
+  newGPS <- dir.create(file.path(paste0('C:/Users/kourtney.burger/Desktop/CalCurCEAS PACE/metadata/gps/', dd$Data_ID[i])))
 
   # Copy list of files to new directory
   file.copy(currentGPS, newGPS)
@@ -41,9 +41,11 @@ for (i in 1:nrow(dd)) {
 ```
 
 ```{r}
+# Move other data
+
 # Set up progress bar
 pb <- txtProgressBar(min = 0, max = nrow(dd), style = 3, width = 50, char = "=")  
-# Move other data
+
 for (i in 1:nrow(dd)) {
   # Accelerometer
     currentAccel <- list.files(paste0('Z:/RECORDINGS/DRIFTERS/CalCurCEAS_2024/RAW/',
