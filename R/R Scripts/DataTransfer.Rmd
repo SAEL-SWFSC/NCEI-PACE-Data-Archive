@@ -4,6 +4,66 @@ author: "Kourtney Burger"
 date: "2024-10-07"
 output: html_document
 ---
+```{r}
+library(dplyr)
+```
+
+# Make Calibration File
+- only run once! 
+```{r}
+# download deployment details from spreadsheet (https://docs.google.com/spreadsheets/d/10bxlwfVOe1LFfj69B_YddxcA0V14m7codYwgD2YncFk/edit?gid=395545420#gid=395545420)
+
+#Read in deployment details and pull required columns to make new dataframe
+dd <- read.csv(here::here("R/Spreadsheets & Templates/SAEL Metadata/Deployment Details - NEW DEPLOYMENT TO SAVE.csv"))
+calFile <- dd %>%
+  select("Drift.", "Array_name..Array.letter...2.digit.version.number_Hydrophone.model.numbers.",
+         "ChannelNumber_1","SensorNumber_1..hydrophone.serial.number.", 
+         "ChannelNumber_2", "SensorNumber_2...hydrophone.serial.number.")
+
+# Rename columns
+calFile <- calFile %>%
+  rename(
+    DeploymentID = "Drift.",
+    HydrophoneArray = "Array_name..Array.letter...2.digit.version.number_Hydrophone.model.numbers.",
+    SensorNumber_1 = "ChannelNumber_1",
+    SerialNumber_1 = "SensorNumber_1..hydrophone.serial.number.",
+    SensorNumber_2 = "ChannelNumber_2",
+    SerialNumber_2 = "SensorNumber_2...hydrophone.serial.number."
+  )
+
+# Load inventory info
+inven <- read.csv(here::here("R/Spreadsheets & Templates/SAEL Metadata/Inventory - Hydrophones.csv"))
+
+# Add hydrophone type, sensitivity, and current info
+channel_1 <- inven %>%
+  select(Serial.Number, Model, Hydrophone.Sensitivity.dB.re..1V.uPa, Current.mA) %>%
+  rename(
+    HydrophoneType_1 = Model,
+    HydrophoneSensitivity_1 = Hydrophone.Sensitivity.dB.re..1V.uPa,
+    Current_mA_1 = Current.mA
+  )
+
+channel_2 <- inven %>%
+  select(Serial.Number, Model, Hydrophone.Sensitivity.dB.re..1V.uPa, Current.mA) %>%
+  rename(
+    HydrophoneType_2 = Model,
+    HydrophoneSensitivity_2 = Hydrophone.Sensitivity.dB.re..1V.uPa,
+    Current_mA_2 = Current.mA
+  )
+
+# Perform left joins for SerialNumber_1, SerialNumber_2, and SerialNumber_3
+calFile <- calFile %>%
+  left_join(channel_1, by = c("SerialNumber_1" = "Serial.Number")) %>%
+  left_join(channel_2, by = c("SerialNumber_2" = "Serial.Number"))
+
+# Reorder columns
+calFile <- calFile[, c("DeploymentID", "HydrophoneArray", "SensorNumber_1", 
+                       "HydrophoneType_1", "SerialNumber_1", "HydrophoneSensitivity_1", 
+                       "Current_mA_1", "SensorNumber_2", "HydrophoneType_2", 
+                       "SerialNumber_2", "HydrophoneSensitivity_2", "Current_mA_2")]
+
+write.csv(calFile, here::here("R/Spreadsheets & Templates/CalCurCEAS_CalibrationInfo.csv"), row.names = FALSE)
+```
 
 # Move files to prep for archive
  - moving GPS data, 

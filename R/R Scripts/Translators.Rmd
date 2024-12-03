@@ -120,7 +120,7 @@ Hydrophones <- data.frame(
   "Name" = HPInventory$Serial.Number,
   "Description" = HPInventory$Model,
   "Hydrophone ID" = HPInventory$Serial.Number,
-  "Preamp ID" = 'NA' #If using HTI hydrophones, the preamp is built into the system and it is taken into account when calculating the sensitivity
+#  "Preamp ID" = 'NA' #Based on feedback from NCEI, this is no longer a required field and not applicable to our sensors. If using HTI hydrophones, the preamp is built into the system and it is taken into account when calculating the sensitivity
 )
 
 # Remove duplicates

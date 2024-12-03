@@ -163,10 +163,10 @@ MobileMarineData <- data.frame(
     "Dataset Packager" = 'Kourtney Burger',
   
   # Calibration Tab
-    "Calibration Documents Path" = '', # link to calibration file, make one for project if necessary
+    "Calibration Documents Path" = here::here("R/Spreadsheets & Templates/CalCurCEAS_CalibrationInfo.csv"), # link to calibration file, make one for project if necessary
     "Calibration Description" = 'This dataset is composed of multichannel recorders with different types of hydrophones, each with its own unique sensitivity and frequency range. For the detailed calibration information refer to the CalCurCEAS_CalibrationInfo.csv spreadsheet.', #Create calibration sheet from inventory                 
-    # "Pre Deployment Calibration Date" = '',
-    # "Post Deployment Calibration Date" = '',
+    # "Pre Deployment Calibration Date" = '', #not used, our sensors are factory calibrated
+    # "Post Deployment Calibration Date" = '', #not used, our sensors are factory calibrated
   
   # Location Tab
     "Location Type" = 'Mobile Marine',
