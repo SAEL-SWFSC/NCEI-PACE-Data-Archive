@@ -1,0 +1,1 @@
+Because these file titles are not descriptive, you can open each one in a text editor and look at the 'type' field (example:{"type":"audio package"). You can also save these to your PACE folder to open these in the GUI (~.pace\data\translators).

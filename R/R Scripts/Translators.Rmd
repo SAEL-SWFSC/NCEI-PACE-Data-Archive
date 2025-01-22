@@ -4,8 +4,7 @@ author: "Kourtney Burger"
 date: "2024-11-22"
 output: html_document
 ---
-
-Script to create translators and spreadsheets to package passive acoustics data for archive at NCEI
+Purpose: Script to create translators and spreadsheets to package passive acoustics data for archive at NCEI
 ```{r}
 # Load packages
 library(readxl)
