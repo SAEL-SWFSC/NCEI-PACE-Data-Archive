@@ -30,7 +30,7 @@ The DataTransfer.Rmd script helps prepare and transfer the raw data for packagin
 
 ### Download PACE
 
-Follow the directions on the [PACE repository README](https://github.com/CI-CMG/pace#) to complete the GUI installation.
+Follow the directions on the [PACE repository README](https://github.com/CI-CMG/pace?tab=readme-ov-file#pace---passive-acoustic-collection-engine) to complete the GUI installation.
 
 Note: To use the same translators developed for SAEL CalCurCEAS data, download the [json files here](https://github.com/Kourtney-Burger/NCEI-PACE-Data-Archive/tree/8545da7e49533dbbdd4716374ebed8b19024c8c7/PACE%20Translators) and save them to your local PACE folder (\~.pace\data\translators).
 
