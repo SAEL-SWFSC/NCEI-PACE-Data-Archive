@@ -45,7 +45,7 @@ Note: When running the following scripts, review each one and update any paths o
 5.  Run the Translators.Rmd code to create your metadata spreadsheets. Take note to update any paths or specific metadata as needed
 6.  Open PACE GUI and use the Translators tab to create new ones or use SAEL/CalCurCEAS specific ones
     -   If recreating new translators, follow the directions in the [PACE documentation](https://github.com/CI-CMG/pace/blob/6f1901f476278814289296a4ec7c420f860d019e/docs/PACE%20GUI%20Guide.pdf)
-    -   If using SAEL translators, make sure they are saved to your local PACE folder ([methods here]([json files here](https://github.com/Kourtney-Burger/NCEI-PACE-Data-Archive/tree/8545da7e49533dbbdd4716374ebed8b19024c8c7/PACE%20Translators))). Each translator should already mapped the fields from each spreadsheet created in the Translators.Rmd to the PACE fields
+    -   If using SAEL translators, make sure they are saved to your local PACE folder ([methods here](https://github.com/Kourtney-Burger/NCEI-PACE-Data-Archive/tree/8545da7e49533dbbdd4716374ebed8b19024c8c7/PACE%20Translators)). Each translator should already mapped the fields from each spreadsheet created in the Translators.Rmd to the PACE fields
 7.  Click on the Metadata tab in PACE and Translate your metadata for each type/tab at the top of the window
     -   Project example: Click on 'Projects' tab and select 'Translate'
     -   In the new window select the 'Projects' translator from the first dropdown
