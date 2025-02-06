@@ -37,7 +37,7 @@ dd <- read.csv(here::here("R/Spreadsheets & Templates/SAEL Metadata/Deployment D
 
 ## PACE NCEI-Templates
 ```{r}
-MobileMarineTemplate <- read_xlsx(here::here("R/Spreadsheets & Templates/NCEI-Templates/Mobile-Marine-NCEI-PACE-Template.xlsx"))
+MobileMarineTemplate <- read_xlsx(here::here("R/Spreadsheets & Templates/NCEI-Templates/Mobile-Marine-KB-Template.xlsx"))
 ```
 
 
@@ -151,14 +151,14 @@ MobileMarineData <- data.frame(
   # File Paths Tab
     # "Temperature Path" = '', #no temp data
     # "Biological Path" = '', #no bio data
-    "Other Path" = paste0('C:/Users/kourtney.burger/Desktop/CalCurCEAS PACE/metadata/',
-                                dd$Data_ID[i]), #include acceleration, logs, and depth data
+    "Other Path" = paste0('E:/CalCurCEAS PACE/metadata/',
+                                dd$Data_ID), #include acceleration, logs, and depth data
     #"Documents Path" = '', # no docs until published
     "Source Path" =  paste0('Z:/RECORDINGS/DRIFTERS/CalCurCEAS_2024/RAW/', dd$Drift.), # Path to audio data   
   
   # Contacts Tab
     "Scientists" = dd$Personnel,
-    "Sources" = 'NOAA SWFSC;', # Organization running survey
+    "Sources" = 'NOAA SWFSC', # Organization running survey
     "Funders" = 'NOAA SWFSC;Bureau of Ocean Energy Management (BOEM)', 
     "Dataset Packager" = 'Kourtney Burger',
   
@@ -173,12 +173,12 @@ MobileMarineData <- data.frame(
     "Sea Area" = 'North Pacific Ocean',  
     "Vessel" = dd$Deploy.Vessel,                                   
     "Location Derivation Description" = 'Location derived from GPS device affixed to top of drifting buoy',          
-    "File(s)" = paste0('C:/Users/kourtney.burger/Desktop/CalCurCEAS PACE/metadata/gps/', dd$Data_ID[i]), # Path to GPS data
+    "File(s)" = paste0('E:/CalCurCEAS PACE/metadata/gps/', dd$Data_ID), # Path to GPS data
   
   # Quality Tab
     "Quality Analyst" = dd$Quality_Analyst,                          
-    # "Quality Analysis Objectives" = '', # Type out objectives
-    # "Quality Analysis Method" = '', # Type out method, i.e. scanned ltsa ...
+    "Quality Analysis Objectives" = 'These data are being used for beaked whale and sperm whale analysis. Data quality was only assessed for mid to high frequency noise.', # Type out objectives
+    "Quality Analysis Method" = 'Analyst scanned for mid to high frequency noise using a 384kHz long term spectral average (LTSA).', # Type out method, i.e. scanned ltsa ...
     # "Quality Assessment Description" = '', # not sure...
   
     # Entries

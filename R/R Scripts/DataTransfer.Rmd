@@ -76,14 +76,14 @@ dd <- read.csv(here::here("R/Spreadsheets & Templates/SAEL Metadata/Deployment D
 
 ```{r}
 #Create file path
-dir.create(file.path('C:/Users/kourtney.burger/Desktop/CalCurCEAS PACE/metadata'))
+dir.create(file.path('E:/CalCurCEAS PACE/'))
+dir.create(file.path('E:/CalCurCEAS PACE/metadata'))
 ```
 
 ```{r}
 #Move GPS data
 for (i in 1:nrow(dd)) {
-  dir.create(file.path(paste0('C:/Users/kourtney.burger/Desktop/CalCurCEAS PACE/metadata/', 
-                             dd$Data_ID[i],'/gps')))  
+  dir.create(file.path('E:/CalCurCEAS PACE/metadata', dd$Data_ID[i]))  
   
   # List of current gps files location
   currentGPS <- list.files(paste0('Z:/METADATA/CalCurCEAS_2024/',dd$Data_ID[i],
@@ -91,9 +91,9 @@ for (i in 1:nrow(dd)) {
                            pattern = "\\_GPS.csv$", full.names = T)
   
   # Create folder/directory to move the list above to
-  dir.create(file.path(paste0('C:/Users/kourtney.burger/Desktop/CalCurCEAS PACE/metadata/', dd$Data_ID[i],'/gps')))
+  dir.create(file.path(paste0('E:/CalCurCEAS PACE/metadata/', dd$Data_ID[i],'/gps')))
   
-  newGPS <- dir.create(file.path(paste0('C:/Users/kourtney.burger/Desktop/CalCurCEAS PACE/metadata/gps/', dd$Data_ID[i])))
+  newGPS <- file.path(paste0('E:/CalCurCEAS PACE/metadata/', dd$Data_ID[i],'/gps'))
 
   # Copy list of files to new directory
   file.copy(currentGPS, newGPS)
@@ -113,35 +113,35 @@ for (i in 1:nrow(dd)) {
                                pattern = "\\.accel.csv$", full.names = T)
 
     # Create folder/directory to move the list above to
-    dir.create(file.path(paste0('C:/Users/kourtney.burger/Desktop/CalCurCEAS PACE/metadata/',
+    dir.create(file.path(paste0('E://CalCurCEAS PACE/metadata/',
                                 dd$Data_ID[i],'/accelerometer')))
-    newAccel <- file.path(paste0('C:/Users/kourtney.burger/Desktop/CalCurCEAS PACE/metadata/',
+    newAccel <- file.path(paste0('E://CalCurCEAS PACE/metadata/',
                                 dd$Data_ID[i],'/accelerometer'))
     # Copy list of files to new directory
     file.copy(currentAccel, newAccel)
-    
-    
+
+
   # Logs
     currentLogs <- list.files(paste0('Z:/RECORDINGS/DRIFTERS/CalCurCEAS_2024/RAW/',
                                       dd$Data_ID[i], '/LOG'),
                                pattern = "\\.log.xml$", full.names = T)
 
     # Create folder/directory to move the list above to
-    dir.create(file.path(paste0('C:/Users/kourtney.burger/Desktop/CalCurCEAS PACE/metadata/',
+    dir.create(file.path(paste0('E://CalCurCEAS PACE/metadata/',
                                 dd$Data_ID[i],'/logs')))
-    newLogs <- file.path(paste0('C:/Users/kourtney.burger/Desktop/CalCurCEAS PACE/metadata/',
+    newLogs <- file.path(paste0('E://CalCurCEAS PACE/metadata/',
                                 dd$Data_ID[i],'/logs'))
     # Copy list of files to new directory
-    file.copy(currentLogs, newLogs)   
+    file.copy(currentLogs, newLogs)
     
     
   # Depth
-    currentDepth <- list.files(paste0('Z:/METADATA/CalCurCEAS_2024/', dd$Data_ID[i], '/', dd$Data_ID[i], '_Depth_Sensus'), pattern = "_final.csv$", full.names = TRUE)
+    currentDepth <- list.files(paste0('Z:/METADATA/CalCurCEAS_2024/', dd$Data_ID[i], '/', dd$Data_ID[i], '_Depth_Sensus'), pattern = "_Sensus.csv$", full.names = TRUE)
 
     # Create folder/directory to move the list above to
-    dir.create(file.path(paste0('C:/Users/kourtney.burger/Desktop/CalCurCEAS PACE/metadata/',
+    dir.create(file.path(paste0('E://CalCurCEAS PACE/metadata/',
                                 dd$Data_ID[i],'/depth')))
-    newDepth <- file.path(paste0('C:/Users/kourtney.burger/Desktop/CalCurCEAS PACE/metadata/',
+    newDepth <- file.path(paste0('E://CalCurCEAS PACE/metadata/',
                                 dd$Data_ID[i],'/depth'))
     # Copy list of files to new directory
     file.copy(currentDepth, newDepth)
@@ -152,5 +152,9 @@ for (i in 1:nrow(dd)) {
 ```
 
  
+```{r}
+# Audio data - copying manually after data is packaged to save packaging time
+
+```
  
  
