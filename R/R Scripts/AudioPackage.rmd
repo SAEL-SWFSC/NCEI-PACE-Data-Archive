@@ -135,13 +135,13 @@ MobileMarineData <- data.frame(
   # Package Tab
     #"UUID" = '' # Leave blank, PACE autocreates this
     "Data Collection Name" = paste0('SWFSC-', dd$Drift.), #Package name
-    #'Site Or Cruise Name' = '', #Not used
+    "Site Or Cruise Name" = 'CalCurCEAS_2024',
     "Deployment Id" = dd$Drift.,
     "Projects" = dd$Project,
     "Platform" = dd$Platform,                                 
     "Instrument" = dd$Type,                               
     "Deployment Title" = 'California Current Cetacean Ecosystem Assessment Survey (CalCurCEAS)',
-    "Deployment Purpose" = 'The purpose of the 2024 California Current Cetacean and Ecosystem Assessment Survey (CalCurCEAS) was to collect visual line-transect data for estimating the density of all cetacean species along the United States West Coast. Drifting acoustic spar buoy recorders (DASBR) were deployed throughout the survey area and continuously recorded the ocean soundscape up to 384 kHz. DASBRs are free floating instruments with two hydrophones in a vertical array and a digital recorder.',
+    "Deployment Purpose" = 'The purpose of the 2024 California Current Cetacean and Ecosystem Assessment Survey (CalCurCEAS) was to collect visual line-transect data for estimating the density of all cetacean species along the United States West Coast. Passive acoustic drifitng buoys were deployed throughout the survey area and continuously recorded the ocean soundscape up to 384 kHz. These buoys are are free floating instruments with two hydrophones in a vertical array and a digital recorder.',
     #"Deployment Description" = '', #Not used                   
     "Alternate Site Name" = dd$Site,                      
     #"Alternate Deployment Name" = '', # Not used                  
