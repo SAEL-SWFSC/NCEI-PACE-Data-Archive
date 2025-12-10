@@ -26,7 +26,7 @@ This script will read in metadata from the deployment details spreadsheet and wi
 
 ### Data Transfer
 
-The DataTransfer.Rmd script helps prepare and transfer the raw data for packaging. To speed up the packaging process, CalCurCEAS data was copied from its original storage location (local servers) and reorganized on an external drive. This script automates the file transfer process and creates new paths for your Audio Packages.
+The [DataTransfer.Rmd script](https://github.com/SAEL-SWFSC/NCEI-PACE-Data-Archive/blob/main/R/R%20Scripts/DataTransfer.Rmd) helps prepare and transfer the raw data for packaging. To speed up the packaging process, CalCurCEAS data was copied from its original storage location (local servers) and reorganized on an external drive. This script automates the file transfer process and creates new paths for your Audio Packages.
 
 ## Archive Steps
 
