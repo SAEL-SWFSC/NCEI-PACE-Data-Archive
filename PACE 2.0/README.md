@@ -1,1 +1,1 @@
-Copy the .pace/data folder to your local PACE directory (local/.pace/.data) to use SAEL specific metadata and translators 
+Copy the .pace/data folder to your local PACE directory (local/.pace/data) to use SAEL specific metadata and translators 

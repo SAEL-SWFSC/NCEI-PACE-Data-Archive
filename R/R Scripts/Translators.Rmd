@@ -76,7 +76,7 @@ OrgTemplate <- read_xlsx(here::here("R/Spreadsheets & Templates/NCEI-Templates/O
 # )
 Organization <- OrgTemplate
 
-#Need to fill in person specific information manually before translating this metadata to PACE
+#Need to fill in organization specific information manually before translating this metadata to PACE
 
 # Export dataframe
 write_xlsx(Organization, here::here("R/Spreadsheets & Templates/Organization.xlsx"))
@@ -95,7 +95,7 @@ dd$Type[dd$Type == "ST4300STD"] <- "SoundTrap 4300"
 dd$Type[dd$Type == "ST500HF"] <- "SoundTrap 500 High Frequency"
 dd$Type[dd$Type == "ST300HF"] <- "SoundTrap 300 High Frequency"
 
-# Add projects list from deployment details to list
+# Add instrument list from deployment details to list
 Instruments <- data.frame(
   "Name" = unique(dd$Type),
   "File Types" = 'wav'
@@ -114,7 +114,7 @@ HydrophoneTemplate <- read_xlsx(here::here("R/Spreadsheets & Templates/NCEI-Temp
 # Read in hydrophone inventory for more metadata
 HPInventory <- read.csv(here::here("R/Spreadsheets & Templates/SAEL Metadata/Inventory - Hydrophones.csv"))
 
-# Add projects list from deployment details to list
+# Add hydrophones from inventory to list
 Hydrophones <- data.frame(
   "Name" = HPInventory$Serial.Number,
   "Description" = HPInventory$Model,
@@ -134,7 +134,7 @@ write_xlsx(Hydrophones, here::here("R/Spreadsheets & Templates/Hydrophones.xlsx"
 # Read in template spreadsheet and set up dataframe
 DepthTemplate <- read_xlsx(here::here("R/Spreadsheets & Templates/NCEI-Templates/Depth-Sensor-KB-Template.xlsx"))
 
-# Add projects list from deployment details to list
+# Add depth sensors from deployment details to list
 Depth <- data.frame(
   "Name" = unique(dd$Depth.Sensor..serial.number..top.bottom.),
   "Description" = 'Sensus Depth Sensor',
@@ -169,7 +169,7 @@ dd$GPS.Tracker[dd$GPS.Tracker == "NA"] <- "NA"
 dd$GPS.Tracker[dd$GPS.Tracker == "SPOT and solar gps"] <- "Both SPOT and Lonestar Solar GPS were attached to this deployment. GPS data from all devices were cleaned and combined into one trackline."
 dd$GPS.Tracker[dd$GPS.Tracker == "Solar"] <- "Lonestar Solar GPS device."
 
-# Add projects list from deployment details to list
+# Add GPS devices from deployment details to list
 GPS <- data.frame(
   "Name" = dd$GPS.ID..if.appropriate...top...bottom.,
   "Description" = dd$GPS.Tracker,
